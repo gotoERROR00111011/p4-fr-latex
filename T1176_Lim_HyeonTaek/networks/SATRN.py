@@ -135,7 +135,8 @@ class DeepCNN300(nn.Module):
             dropout_rate=0.2,
         )
         num_features = num_features + depth * growth_rate
-        self.trans1 = TransitionBlock(num_features, num_features // 2)  # 16 x 16
+        self.trans1 = TransitionBlock(
+            num_features, num_features // 2)  # 16 x 16
         num_features = num_features // 2
         self.block2 = DenseBlock(
             num_features,  # 128
@@ -278,8 +279,10 @@ class PositionalEncoding2D(nn.Module):
     def __init__(self, in_channels, max_h=64, max_w=128, dropout=0.1):
         super(PositionalEncoding2D, self).__init__()
 
-        self.h_position_encoder = self.generate_encoder(in_channels // 2, max_h)
-        self.w_position_encoder = self.generate_encoder(in_channels // 2, max_w)
+        self.h_position_encoder = self.generate_encoder(
+            in_channels // 2, max_h)
+        self.w_position_encoder = self.generate_encoder(
+            in_channels // 2, max_w)
 
         self.h_linear = nn.Linear(in_channels // 2, in_channels // 2)
         self.w_linear = nn.Linear(in_channels // 2, in_channels // 2)
@@ -296,7 +299,7 @@ class PositionalEncoding2D(nn.Module):
         return position_encoder  # (Max_len, In_channel)
 
     def forward(self, input):
-        ### Require DEBUG
+        # Require DEBUG
         b, c, h, w = input.size()
         h_pos_encoding = (
             self.h_position_encoder[:h, :].unsqueeze(1).to(input.get_device())
@@ -311,7 +314,8 @@ class PositionalEncoding2D(nn.Module):
         h_pos_encoding = h_pos_encoding.expand(-1, w, -1)   # h, w, c/2
         w_pos_encoding = w_pos_encoding.expand(h, -1, -1)   # h, w, c/2
 
-        pos_encoding = torch.cat([h_pos_encoding, w_pos_encoding], dim=2)  # [H, W, 2*D]
+        pos_encoding = torch.cat(
+            [h_pos_encoding, w_pos_encoding], dim=2)  # [H, W, 2*D]
 
         pos_encoding = pos_encoding.permute(2, 0, 1)  # [2*D, H, W]
 
@@ -350,7 +354,8 @@ class TransformerEncoderFor2DFeatures(nn.Module):
         self.positional_encoding = PositionalEncoding2D(hidden_dim)
         self.attention_layers = nn.ModuleList(
             [
-                TransformerEncoderLayer(hidden_dim, filter_size, head_num, dropout_rate)
+                TransformerEncoderLayer(
+                    hidden_dim, filter_size, head_num, dropout_rate)
                 for _ in range(layer_num)
             ]
         )
@@ -442,10 +447,12 @@ class PositionEncoder1D(nn.Module):
 
     def forward(self, x, point=-1):
         if point == -1:
-            out = x + self.position_encoder[:, : x.size(1), :].to(x.get_device())
+            out = x + self.position_encoder[:,
+                                            : x.size(1), :].to(x.get_device())
             out = self.dropout(out)
         else:
-            out = x + self.position_encoder[:, point, :].unsqueeze(1).to(x.get_device())
+            out = x + self.position_encoder[:, point,
+                                            :].unsqueeze(1).to(x.get_device())
         return out
 
 
@@ -523,7 +530,8 @@ class TransformerDecoder(nn.Module):
         else:
             out = []
             num_steps = batch_max_length - 1
-            target = torch.LongTensor(src.size(0)).fill_(self.st_id).to(device) # [START] token
+            target = torch.LongTensor(src.size(0)).fill_(
+                self.st_id).to(device)  # [START] token
             features = [None] * self.layer_num
 
             for t in range(num_steps):
@@ -535,15 +543,17 @@ class TransformerDecoder(nn.Module):
                 for l, layer in enumerate(self.attention_layers):
                     tgt = layer(tgt, features[l], src, tgt_mask)
                     features[l] = (
-                        tgt if features[l] == None else torch.cat([features[l], tgt], 1)
+                        tgt if features[l] == None else torch.cat(
+                            [features[l], tgt], 1)
                     )
 
                 _out = self.generator(tgt)  # [b, 1, c]
                 target = torch.argmax(_out[:, -1:, :], dim=-1)  # [b, 1]
                 target = target.squeeze()   # [b]
                 out.append(_out)
-            
-            out = torch.stack(out, dim=1).to(device)    # [b, max length, 1, class length]
+
+            # [b, max length, 1, class length]
+            out = torch.stack(out, dim=1).to(device)
             out = out.squeeze(2)    # [b, max length, class length]
 
         return out
@@ -575,7 +585,7 @@ class SATRN(nn.Module):
         )
 
         self.criterion = (
-            nn.CrossEntropyLoss()
+            nn.CrossEntropyLoss(ignore_index=train_dataset.token_to_id[PAD])
         )  # without ignore_index=train_dataset.token_to_id[PAD]
 
         if checkpoint:

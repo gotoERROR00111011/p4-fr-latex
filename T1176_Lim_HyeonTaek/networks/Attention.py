@@ -45,7 +45,7 @@ class CNN(nn.Module):
         self.conv5 = convRelu(5)
         self.pooling5 = nn.MaxPool2d((2, 2), (2, 1), (0, 1))
         self.conv6 = convRelu(6, True)
-    
+
     def forward(self, input):
         out = self.conv0(input)     # [batch size, 64, 128, 128]
         out = self.pooling0(out)    # [batch size, 64, 64, 64]
@@ -59,6 +59,7 @@ class CNN(nn.Module):
         out = self.pooling5(out)    # [batch size, 512, 8, 34]
         out = self.conv6(out)       # [batch size, 512, 7, 33]
         return out
+
 
 class AttentionCell(nn.Module):
     def __init__(self, src_dim, hidden_dim, embedding_dim, num_layers=1, cell_type='LSTM'):
@@ -102,11 +103,13 @@ class AttentionCell(nn.Module):
     def forward(self, prev_hidden, src, tgt):   # src: [b, L, c]
         src_features = self.i2h(src)  # [b, L, h]
         if self.num_layers == 1:
-            prev_hidden_proj = self.h2h(prev_hidden[0]).unsqueeze(1)    # [b, 1, h]
+            prev_hidden_proj = self.h2h(
+                prev_hidden[0]).unsqueeze(1)    # [b, 1, h]
         else:
-            prev_hidden_proj = self.h2h(prev_hidden[-1][0]).unsqueeze(1)    # [b, 1, h]
+            prev_hidden_proj = self.h2h(
+                prev_hidden[-1][0]).unsqueeze(1)    # [b, 1, h]
         attention_logit = self.score(
-            torch.tanh(src_features + prev_hidden_proj) # [b, L, h]
+            torch.tanh(src_features + prev_hidden_proj)  # [b, L, h]
         )  # [b, L, 1]
         alpha = F.softmax(attention_logit, dim=1)  # [b, L, 1]
         context = torch.bmm(alpha.permute(0, 2, 1), src).squeeze(1)  # [b, c]
@@ -175,14 +178,18 @@ class AttentionDecoder(nn.Module):
         )
         if self.num_layers == 1:
             hidden = (
-                torch.FloatTensor(batch_size, self.hidden_dim).fill_(0).to(device),
-                torch.FloatTensor(batch_size, self.hidden_dim).fill_(0).to(device),
+                torch.FloatTensor(
+                    batch_size, self.hidden_dim).fill_(0).to(device),
+                torch.FloatTensor(
+                    batch_size, self.hidden_dim).fill_(0).to(device),
             )
         else:
             hidden = [
                 (
-                    torch.FloatTensor(batch_size, self.hidden_dim).fill_(0).to(device),
-                    torch.FloatTensor(batch_size, self.hidden_dim).fill_(0).to(device),
+                    torch.FloatTensor(
+                        batch_size, self.hidden_dim).fill_(0).to(device),
+                    torch.FloatTensor(
+                        batch_size, self.hidden_dim).fill_(0).to(device),
                 )
                 for _ in range(self.num_layers)
             ]
@@ -233,9 +240,9 @@ class Attention(nn.Module):
         checkpoint=None,
     ):
         super(Attention, self).__init__()
-        
+
         self.encoder = CNN(FLAGS.data.rgb)
-        
+
         self.decoder = AttentionDecoder(
             num_classes=len(train_dataset.id_to_token),
             src_dim=FLAGS.Attention.src_dim,
@@ -247,15 +254,16 @@ class Attention(nn.Module):
             cell_type=FLAGS.Attention.cell_type)
 
         self.criterion = (
-            nn.CrossEntropyLoss()
+            nn.CrossEntropyLoss(ignore_index=train_dataset.token_to_id[PAD])
         )
 
         if checkpoint:
             self.load_state_dict(checkpoint)
-    
+
     def forward(self, input, expected, is_train, teacher_forcing_ratio):
         out = self.encoder(input)
         b, c, h, w = out.size()
         out = out.view(b, c, h * w).transpose(1, 2)  # [b, h x w, c]
-        output = self.decoder(out, expected, is_train, teacher_forcing_ratio, batch_max_length=expected.size(1))    # [b, sequence length, class size]
+        output = self.decoder(out, expected, is_train, teacher_forcing_ratio,
+                              batch_max_length=expected.size(1))    # [b, sequence length, class size]
         return output
