@@ -178,10 +178,6 @@ class LoadDataset(Dataset):
             bounding_box = ImageOps.invert(image).getbbox()
             image = image.crop(bounding_box)
 
-        image = image_to_cv2(image)
-        image = adaptive_histogram_equalize(image)
-        image = cv2_to_image(image)
-
         if self.transform:
             image = self.transform(image)
 
@@ -249,10 +245,6 @@ class LoadEvalDataset(Dataset):
             # not white ones.
             bounding_box = ImageOps.invert(image).getbbox()
             image = image.crop(bounding_box)
-
-        image = image_to_cv2(image)
-        image = adaptive_histogram_equalize(image)
-        image = cv2_to_image(image)
 
         if self.transform:
             image = self.transform(image)
