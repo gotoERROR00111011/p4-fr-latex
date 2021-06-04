@@ -2,6 +2,8 @@ import csv
 import os
 import random
 import torch
+import cv2
+import numpy as np
 from PIL import Image, ImageOps
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
@@ -20,7 +22,8 @@ def encode_truth(truth, token_to_id):
         if token not in token_to_id:
             raise Exception("Truth contains unknown token")
     truth_tokens = [token_to_id[x] for x in truth_tokens]
-    if '' in truth_tokens: truth_tokens.remove('')
+    if '' in truth_tokens:
+        truth_tokens.remove('')
     return truth_tokens
 
 
@@ -41,14 +44,14 @@ def load_vocab(tokens_paths):
 def split_gt(groundtruth, proportion=1.0, test_percent=None):
     root = os.path.join(os.path.dirname(groundtruth), "images")
     with open(groundtruth, "r") as fd:
-        data=[]
+        data = []
         for line in fd:
             data.append(line.strip().split("\t"))
         random.shuffle(data)
         dataset_len = round(len(data) * proportion)
         data = data[:dataset_len]
         data = [[os.path.join(root, x[0]), x[1]] for x in data]
-    
+
     if test_percent:
         test_len = round(len(data) * test_percent)
         return data[test_len:], data[:test_len]
@@ -72,6 +75,7 @@ def collate_batch(data):
         },
     }
 
+
 def collate_eval_batch(data):
     max_len = max([len(d["truth"]["encoded"]) for d in data])
     # Padding with -1, will later be replaced with the PAD token
@@ -81,13 +85,39 @@ def collate_eval_batch(data):
     ]
     return {
         "path": [d["path"] for d in data],
-        "file_path":[d["file_path"] for d in data],
+        "file_path": [d["file_path"] for d in data],
         "image": torch.stack([d["image"] for d in data], dim=0),
         "truth": {
             "text": [d["truth"]["text"] for d in data],
             "encoded": torch.tensor(padded_encoded)
         },
     }
+
+
+def image_to_cv2(image):
+    return np.asarray(image)
+
+
+def cv2_to_image(image):
+    return Image.fromarray(image)
+
+
+def adaptive_histogram_equalize(image):
+    height, width = image.shape
+    width = max(1, int(width / 100))
+    height = max(1, int(height / 100))
+
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(height, width))
+    equalized = clahe.apply(image)
+
+    equalized = cv2.equalizeHist(equalized)
+
+    #bit = 25
+    #image = np.array(image/bit, dtype=np.int) * bit
+    #image = np.array(image, dtype=np.float32)
+
+    return equalized
+
 
 class LoadDataset(Dataset):
     """Load Dataset"""
@@ -148,10 +178,15 @@ class LoadDataset(Dataset):
             bounding_box = ImageOps.invert(image).getbbox()
             image = image.crop(bounding_box)
 
+        image = image_to_cv2(image)
+        image = adaptive_histogram_equalize(image)
+        image = cv2_to_image(image)
+
         if self.transform:
             image = self.transform(image)
 
         return {"path": item["path"], "truth": item["truth"], "image": image}
+
 
 class LoadEvalDataset(Dataset):
     """Load Dataset"""
@@ -183,7 +218,7 @@ class LoadEvalDataset(Dataset):
         self.data = [
             {
                 "path": p,
-                "file_path":p1,
+                "file_path": p1,
                 "truth": {
                     "text": truth,
                     "encoded": [
@@ -193,7 +228,7 @@ class LoadEvalDataset(Dataset):
                     ],
                 },
             }
-            for p, p1,truth in groundtruth
+            for p, p1, truth in groundtruth
         ]
 
     def __len__(self):
@@ -215,15 +250,20 @@ class LoadEvalDataset(Dataset):
             bounding_box = ImageOps.invert(image).getbbox()
             image = image.crop(bounding_box)
 
+        image = image_to_cv2(image)
+        image = adaptive_histogram_equalize(image)
+        image = cv2_to_image(image)
+
         if self.transform:
             image = self.transform(image)
 
-        return {"path": item["path"], "file_path":item["file_path"],"truth": item["truth"], "image": image}
+        return {"path": item["path"], "file_path": item["file_path"], "truth": item["truth"], "image": image}
+
 
 def dataset_loader(options, transformed):
 
     # Read data
-    train_data, valid_data = [], [] 
+    train_data, valid_data = [], []
     if options.data.random_split:
         for i, path in enumerate(options.data.train):
             prop = 1.0
