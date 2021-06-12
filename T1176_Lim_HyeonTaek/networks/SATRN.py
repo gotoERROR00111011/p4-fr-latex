@@ -5,6 +5,8 @@ import numpy as np
 import math
 import random
 
+from torch.nn.modules import padding
+
 from dataset import START, PAD
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -232,6 +234,7 @@ class MultiHeadAttention(nn.Module):
         return out
 
 
+"""
 class Feedforward(nn.Module):
     def __init__(self, filter_size=2048, hidden_dim=512, dropout=0.1):
         super(Feedforward, self).__init__()
@@ -247,6 +250,28 @@ class Feedforward(nn.Module):
 
     def forward(self, input):
         return self.layers(input)
+"""
+
+
+class LocalityAwareFeedForward(nn.Module):
+    def __init__(self, filter_size=2048, hidden_dim=512, dropout=0.1):
+        super(LocalityAwareFeedForward, self).__init__()
+
+        self.layers = nn.Sequential(
+            nn.Conv2d(in_channels=hidden_dim,
+                      out_channels=filter_size, kernel_size=1),
+            nn.Conv2d(in_channels=filter_size, out_channels=filter_size,
+                      kernel_size=3, padding=1, groups=filter_size),
+            nn.Conv2d(in_channels=filter_size,
+                      out_channels=hidden_dim, kernel_size=1),
+        )
+
+    def forward(self, input, view):
+        b, c, h, w = view
+        out = input.view(b, c, h, w)
+        out = self.layers(out)
+        out = out.view(b, c, h*w).transpose(1, 2)
+        return out
 
 
 class TransformerEncoderLayer(nn.Module):
@@ -260,18 +285,20 @@ class TransformerEncoderLayer(nn.Module):
             dropout=dropout_rate,
         )
         self.attention_norm = nn.LayerNorm(normalized_shape=input_size)
-        self.feedforward_layer = Feedforward(
+
+        self.feedforward_layer = LocalityAwareFeedForward(
             filter_size=filter_size, hidden_dim=input_size
         )
         self.feedforward_norm = nn.LayerNorm(normalized_shape=input_size)
 
-    def forward(self, input):
+    def forward(self, input, view):
 
         att = self.attention_layer(input, input, input)
         out = self.attention_norm(att + input)
 
-        ff = self.feedforward_layer(out)
+        ff = self.feedforward_layer(out, view)
         out = self.feedforward_norm(ff + out)
+
         return out
 
 
@@ -371,8 +398,10 @@ class TransformerEncoderFor2DFeatures(nn.Module):
         b, c, h, w = out.size()
         out = out.view(b, c, h * w).transpose(1, 2)  # [b, h x w, c]
 
+        view = (b, c, h, w)
         for layer in self.attention_layers:
-            out = layer(out)
+            out = layer(out, view)
+
         return out
 
 
@@ -407,7 +436,7 @@ class TransformerDecoderLayer(nn.Module):
             att = self.self_attention_layer(tgt, tgt, tgt, tgt_mask)
             out = self.self_attention_norm(att + tgt)
 
-            att = self.attention_layer(tgt, src, src)
+            att = self.attention_layer(out, src, src)
             out = self.attention_norm(att + out)
 
             ff = self.feedforward_layer(out)
@@ -417,7 +446,7 @@ class TransformerDecoderLayer(nn.Module):
             att = self.self_attention_layer(tgt, tgt_prev, tgt_prev, tgt_mask)
             out = self.self_attention_norm(att + tgt)
 
-            att = self.attention_layer(tgt, src, src)
+            att = self.attention_layer(out, src, src)
             out = self.attention_norm(att + out)
 
             ff = self.feedforward_layer(out)
@@ -517,7 +546,7 @@ class TransformerDecoder(nn.Module):
         return tgt
 
     def forward(
-        self, src, text, is_train=True, batch_max_length=50, teacher_forcing_ratio=1.0
+        self, src, text, is_train=True, batch_max_length=50, teacher_forcing_ratio=1.0, beam_k=3
     ):
 
         if is_train and random.random() < teacher_forcing_ratio:
@@ -549,6 +578,7 @@ class TransformerDecoder(nn.Module):
 
                 _out = self.generator(tgt)  # [b, 1, c]
                 target = torch.argmax(_out[:, -1:, :], dim=-1)  # [b, 1]
+
                 target = target.squeeze()   # [b]
                 out.append(_out)
 
@@ -585,7 +615,7 @@ class SATRN(nn.Module):
         )
 
         self.criterion = (
-            nn.CrossEntropyLoss(ignore_index=train_dataset.token_to_id[PAD])
+            nn.CrossEntropyLoss()
         )  # without ignore_index=train_dataset.token_to_id[PAD]
 
         if checkpoint:
