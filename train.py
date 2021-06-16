@@ -1,4 +1,5 @@
 import os
+import cv2
 import argparse
 import multiprocessing
 import numpy as np
@@ -9,6 +10,10 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import transforms
+import torchvision
+#import albumentations
+#import albumentations.pytorch
+#from albumentations.augmentations.transforms import ToFloat
 import yaml
 from tqdm import tqdm
 from checkpoint import (
@@ -235,6 +240,17 @@ def main(config_file):
             transforms.ToTensor(),
         ]
     )
+    """
+    transformed = albumentations.Compose([
+        albumentations.Resize(options.input_size.height, options.input_size.width),
+        albumentations.SafeRotate(
+            limit=[-5, 5], border_mode=cv2.BORDER_REPLICATE),
+        # albumentations.CLAHE(p=1),
+        albumentations.ToFloat(),
+        albumentations.pytorch.transforms.ToTensorV2()
+    ])
+    """
+
     train_data_loader, validation_data_loader, train_dataset, valid_dataset = dataset_loader(
         options, transformed)
     print(
@@ -462,6 +478,9 @@ def main(config_file):
 
 
 if __name__ == "__main__":
+    # debug setting
+    # os.chdir("code")
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-c",
