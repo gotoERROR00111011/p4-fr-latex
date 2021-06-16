@@ -1,0 +1,128 @@
+train_00000.jpg	4 \times 7 = 2 8
+train_00001.jpg	a ^ { x } > q
+train_00002.jpg	8 \times 9
+train_00003.jpg	\sum _ { k = 1 } ^ { n - 1 } b _ { k } = a _ { n } - a _ { 1 }
+train_00004.jpg	I = d q / d t
+train_00005.jpg	\sum \overrightarrow { F } _ { e x t } = d
+train_00006.jpg	i ^ { 2 } = - 1 \left( i = \sqrt { - 1 } \right)
+train_00007.jpg	7 \times 9 = 4 9
+train_00008.jpg	F \left( 0 , \sqrt { a ^ { 2 } + b ^ { 2 } } \right) , \left( 0 , - \sqrt { a ^ { 2 } + b ^ { 2 } } \right)
+train_00009.jpg	\left( a - 2 \right) \left( a - 3 \right) = 0
+train_00010.jpg	\therefore b = - 9
+train_00011.jpg	2 2 + 7 - 1 2 =
+train_00012.jpg	7 \div 4
+train_00013.jpg	f \left( x \right) = 4 x ^ { 3 }
+train_00014.jpg	M P _ { e } = \lim _ { \Delta l \to 0 } \frac { g \left( l + \Delta l \right) - g \left( l \right) } { \Delta l } = \frac { d g } { d l }
+train_00015.jpg	\sum F _ { \theta } = m a _ { \theta }
+train_00016.jpg	= \frac { \left( n + 2 \right) \left( n + 1 \right) } { 2 } = 7 8 = 2 \times 3 9 = 2 \times 3 \times 1 3
+train_00017.jpg	= h \left( a \right)
+train_00018.jpg	1 0 4 \times 9 8 = \left( 1 0 0 + 4 \right) \left( 1 0 0 - 2 \right)
+train_00019.jpg	a _ { n } = a _ { 1 } r ^ { n - 1 }
+train_00020.jpg	x = - 2
+train_00021.jpg	= 3 x \left( x ^ { 2 } + 1 \right)
+train_00022.jpg	1 8 4 - \left( 8 9 + 8 8 \right) = 7
+train_00023.jpg	t = - 1
+train_00024.jpg	\left( 1 2 x - 1 6 \right) \times \left( - \frac { 3 } { 4 } \right) = 1 2 x \times \left( - \frac { 3 } { 4 } \right)
+train_00025.jpg	\frac { 1 6 } { 2 7 } \div \frac { 2 } { 2 7 } =
+train_00026.jpg	x < 4
+train_00027.jpg	= x \left( x - 1 \right) \cdot \left( x - 2 \right) !
+train_00028.jpg	3 6 . 4 8 \div 4 , 5 6
+train_00029.jpg	a = \sqrt { a _ { r } ^ { 2 } + a _ { \theta } ^ { 2 } } = \sqrt { \left( 0 . 3 3 6 \right) ^ { 2 } + \left( 0 . 0 7 \right) ^ { 2 } } = 0 . 3 4 m / s
+train_00030.jpg	P \left( A \right) \cdot P \left( B \right) = \frac { 1 } { 2 } \times \frac { 1 } { 2 } = \frac { 1 } { 4 } \neq \left( A \cap B \right)
+train_00031.jpg	x = \frac { - b ^ \prime \pm \sqrt { b ^ \prime - a c } } { a }
+train_00032.jpg	y = x - 1
+train_00033.jpg	3 a > 0
+train_00034.jpg	\left( b - 4 \right) ^ { 2 } = b ^ { 2 } -
+train_00035.jpg	\angle A C D = 9 0 ^ { \circ } , \angle A D B = 1 3 5 ^ { \circ }
+train_00036.jpg	A i , B i \in R
+train_00037.jpg	a , b , c
+train_00038.jpg	9 \times 4 = 3 6
+train_00039.jpg	4 + 6 = 1 0
+train_00040.jpg	\therefore a = 3 , q = - 4
+train_00041.jpg	\frac { 1 } { 1 + 2 i } = \frac { 1 - 2 i } { \left( 1 + 2 i \right) \left( 1 - 2 i \right) } = \frac { 1 - 2 i } { 5 } = \frac { 1 } { 5 } - \frac { 2 } { 5 } i
+train_00042.jpg	x \left. \right) > 0
+train_00043.jpg	f ^ { \prime } \left( x \right) < 0
+train_00044.jpg	= \left( a - b \right) ^ { 3 }
+train_00045.jpg	a _ { n } = a r ^ { n - 1 }
+train_00046.jpg	| a |
+train_00047.jpg	\phi = \cos ^ { - 1 } \left( \frac { x } { A } \right) - \omega t
+train_00048.jpg	3 x + 6 y - \left( x - y \right)
+train_00049.jpg	x ^ { 2 } - 4 5 = y ^ { 2 } - 2 5
+train_00050.jpg	\Rightarrow S = \frac { M } { M ^ { * } } \cdot \frac { L ^ { * } } { L }
+train_00051.jpg	+ \frac { 8 } { 1 + a ^ { \frac { 1 } { 2 } } } + \frac { 1 6 } { 1 + a }
+train_00052.jpg	x = \frac { - b ^ { \prime } \pm \sqrt { b ^ { \prime 2 } - a c } } { a }
+train_00053.jpg	\sqrt { 0 . 9 6 } =
+train_00054.jpg	\overline { A E } = \overline { A D } = 1 6 c m
+train_00055.jpg	6 ! = 7 2 0
+train_00056.jpg	7 \times 5 = 3 5 \left( \right.
+train_00057.jpg	a = a _ { 1 } + a _ { 2 } , b ^ { 2 } = a _ { 2 } ^ { 2 } + h ^ { 2 } , c ^ { 2 } = a _ { 1 } ^ { 2 } + h ^ { 2 }
+train_00058.jpg	x ^ { 3 } + y ^ { 3 }
+train_00059.jpg	a = 3
+train_00060.jpg	x ^ { 3 } + a x - 8
+train_00061.jpg	1 - 4 z = 2 1
+train_00062.jpg	= 9
+train_00063.jpg	\int _ { a } ^ { b } \left| v \left( t \right) \right| d t
+train_00064.jpg	\sqrt { 0 . 0 0 7 } = \sqrt { \frac { 7 0 } { 1 0 0 0 0 } } = \frac { \sqrt { 7 0 } } { 1 0 0 } = \frac { 8 . 3 6 7 } { 1 0 0 } =
+train_00065.jpg	y = \log _ { a } x
+train_00066.jpg	= \frac { \sqrt { 3 } } { 4 } \times 6 ^ { 2 } = 9 \sqrt { 3 }
+train_00067.jpg	p \left( \log _ { a } x \right) ^ { 2 } + q \left( \log _ { a } x \right) + r = 0
+train_00068.jpg	= - 2 h
+train_00069.jpg	= \frac { 7 \times 2 5 } { 4 \times 2 5 }
+train_00070.jpg	\sqrt { 2 x } = x
+train_00071.jpg	= \frac { 0 . 6 4 } { 1 } = 0 . 6 4
+train_00072.jpg	\angle B O D = 1 6 0 ^ { \circ }
+train_00073.jpg	\overline { A B } = \frac { \overline { B H } } { \sin 4 5 ^ { \circ } } = 9 \times \frac { 2 } { \sqrt { 2 } } = 9 \sqrt { 2 } \left( m \right)
+train_00074.jpg	\frac { 1 } { N ^ { 2 } } \sigma ^ { 2 } _ { 1 } + \frac { 1 } { N ^ { 4 } } \sum _ { i = 2 } ^ { N + 1 } \sigma ^ { 2 }
+train_00075.jpg	\sum _ { k = 1 } ^ { n } k = \frac { 1 } { 2 } n \left( n + 1 \right)
+train_00076.jpg	A \cup B
+train_00077.jpg	\cos B = \frac { a } { c }
+train_00078.jpg	p \left( x \right) = \left( x + 1 \right) ^ { 3 } Q \left( x \right) + 2 x ^ { 2 } + a x + 1
+train_00079.jpg	x + y - \left( 2 x - y \right)
+train_00080.jpg	= 1 0 6 6 7 { m } ^ { 3 }
+train_00081.jpg	Y _ { t } ^ { * } = \beta X _ { t } ^ { * } + v _ { t }
+train_00082.jpg	\frac { \sqrt { b } } { \sqrt { a } } = - \sqrt { \frac { b } { a } }
+train_00083.jpg	x = \frac { 7 } { 2 }
+train_00084.jpg	= \left( A + 2 \right) ^ { 2 } = \left( x + y + 2 \right) ^ { 2 }
+train_00085.jpg	2 + 2 k
+train_00086.jpg	1 + \tan x > 0 , 1 - \tan x < 0
+train_00087.jpg	< 1 + \left| z _ { 1 } \right| ^ { 2 } \left| z _ { 2 } \right| ^ { 2 }
+train_00088.jpg	3 x - x = - 1 8
+train_00089.jpg	a < 0
+train_00090.jpg	\left( 4 , - 1 \right)
+train_00091.jpg	x ^ { 2 } + y ^ { 2 } = 9
+train_00092.jpg	2 5 : 1 5 : 2 0 =
+train_00093.jpg	a = \frac { \left( 8 . 0 0 k g \right) \left( 6 0 . 0 m / s \right) ^ { 2 } } { \left( 1 5 . 0 m \right) \left( 1 5 0 . 0 k g \right) } - 9 . 8 0 m / s ^ { 2 } = 3 . 0 0 m / s ^ { 2 }
+train_00094.jpg	= 3 \sqrt { 2 } \times \frac { \sqrt { 2 } } { 2 } = 3 \left( m \right)
+train_00095.jpg	\left( x - 3 y + 4 \right) \left( x - 3 y + 5 \right)
+train_00096.jpg	= \left( x + 2 y + z \right) \left( x ^ { 2 } + 4 y ^ { 2 } + z ^ { 2 } \right.
+train_00097.jpg	\alpha + \beta = - 2 , \alpha \beta = k
+train_00098.jpg	R \left( q _ { k } \right) = \frac { q _ { k } ^ { T } \lambda _ { k } q _ { k } } { q _ { k } ^ { T } q _ { k } } = \lambda _ { k }
+train_00099.jpg	\overline { A B } = 3 k c m ,
+train_00100.jpg	\therefore R = f \left( - \frac { b } { a } \right)
+train_00101.jpg	\therefore x = - 3 \pm 2 \sqrt { 2 }
+train_00102.jpg	A = \sqrt \left[ 3 \right] { \sqrt { 1 0 } } , B = \sqrt { 5 } , C = \sqrt \left[ 3 \right] { \sqrt { 2 8 } }
+train_00103.jpg	\overline { { B C } } = 6 c m
+train_00104.jpg	D = 0
+train_00105.jpg	a x ^ { 2 } + 2 b ^ { \prime } x + c = 0 \left( a \neq 0 \right)
+train_00106.jpg	\int _ { a } ^ { b } f \left( t \right) d t
+train_00107.jpg	a + b + c + d
+train_00108.jpg	E _ { 3 } = \left( \begin{matrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{matrix} \right)
+train_00109.jpg	f \left( p \right) , f \left( q \right)
+train_00110.jpg	\overline { { A D } } = \overline { { D C } } ,
+train_00111.jpg	\left( 1 , - 1 \right)
+train_00112.jpg	\therefore \cos \theta = \frac { 1 } { 2 } , 1
+train_00113.jpg	4 2 \div 2 4
+train_00114.jpg	= 1 . 8 0 \times 1 0 ^ { 3 } J
+train_00115.jpg	= 2 7 - 9 \left( \alpha + \beta + \gamma \right) + 3 \left( \alpha \beta \right.
+train_00116.jpg	\delta > 0
+train_00117.jpg	\left( x - 4 \right) \left( x + 2 \right)
+train_00118.jpg	\therefore b > 0
+train_00119.jpg	X = \left\{ a , b , c \right\}
+train_00120.jpg	\sqrt { a } < \sqrt { b }
+train_00121.jpg	1 0 8 \times 5
+train_00122.jpg	= 5 \left( \frac { 1 } { 2 } x ^ { 2 } - 4 x - 7 \right) ^ { 4 } \left( x - 4 \right)
+train_00123.jpg	= 5 \sqrt { 6 } + 6 \sqrt { 3 } - \left( 4 \sqrt { 6 } - 2 \sqrt { 3 } \right)
+train_00124.jpg	2 5 1 \times 7
+train_00125.jpg	= \frac { 1 } { x } - \frac { 1 } { x + 1 0 }
+train_00126.jpg	\therefore 1 0 0 0 a - 1 0 0 b = 1 3 2 3 - 1 5 8 = 1 1 6 5
+train_00127.jpg	a < 0

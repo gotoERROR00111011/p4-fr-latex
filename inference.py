@@ -38,7 +38,8 @@ def main(parser):
 
     transformed = transforms.Compose(
         [
-            transforms.Resize((options.input_size.height, options.input_size.width)),
+            transforms.Resize((options.input_size.height,
+                              options.input_size.width)),
             transforms.ToTensor(),
         ]
     )
@@ -99,7 +100,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--checkpoint",
         dest="checkpoint",
-        default="./log/satrn/checkpoints/0015.pth",
+        default="./log/satrn/checkpoints/0050.pth",
         type=str,
         help="Path of checkpoint file",
     )
@@ -113,7 +114,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--batch_size",
         dest="batch_size",
-        default=8,
+        default=4,  # 8,
         type=int,
         help="batch size when doing inference",
     )
