@@ -112,10 +112,6 @@ def adaptive_histogram_equalize(image):
 
     equalized = cv2.equalizeHist(equalized)
 
-    #bit = 25
-    #image = np.array(image/bit, dtype=np.int) * bit
-    #image = np.array(image, dtype=np.float32)
-
     return equalized
 
 
@@ -178,7 +174,10 @@ class LoadDataset(Dataset):
             bounding_box = ImageOps.invert(image).getbbox()
             image = image.crop(bounding_box)
 
+        #image = np.array(image)
         if self.transform:
+            # image = self.transform(image=image) # albumentations
+            #image = image["image"]
             image = self.transform(image)
 
         return {"path": item["path"], "truth": item["truth"], "image": image}
@@ -246,7 +245,10 @@ class LoadEvalDataset(Dataset):
             bounding_box = ImageOps.invert(image).getbbox()
             image = image.crop(bounding_box)
 
+        #image = np.array(image)
         if self.transform:
+            # image = self.transform(image=image) # albumentations
+            #image = image["image"]
             image = self.transform(image)
 
         return {"path": item["path"], "file_path": item["file_path"], "truth": item["truth"], "image": image}

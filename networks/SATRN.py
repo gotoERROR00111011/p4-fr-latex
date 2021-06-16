@@ -1,3 +1,4 @@
+from re import L
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -234,7 +235,6 @@ class MultiHeadAttention(nn.Module):
         return out
 
 
-"""
 class Feedforward(nn.Module):
     def __init__(self, filter_size=2048, hidden_dim=512, dropout=0.1):
         super(Feedforward, self).__init__()
@@ -250,7 +250,6 @@ class Feedforward(nn.Module):
 
     def forward(self, input):
         return self.layers(input)
-"""
 
 
 class LocalityAwareFeedForward(nn.Module):
@@ -546,7 +545,7 @@ class TransformerDecoder(nn.Module):
         return tgt
 
     def forward(
-        self, src, text, is_train=True, batch_max_length=50, teacher_forcing_ratio=1.0, beam_k=3
+        self, src, text, is_train=True, batch_max_length=50, teacher_forcing_ratio=1.0, beam_k=10
     ):
 
         if is_train and random.random() < teacher_forcing_ratio:
@@ -557,10 +556,10 @@ class TransformerDecoder(nn.Module):
                 tgt = layer(tgt, None, src, tgt_mask)
             out = self.generator(tgt)
         else:
+            """
             out = []
             num_steps = batch_max_length - 1
-            target = torch.LongTensor(src.size(0)).fill_(
-                self.st_id).to(device)  # [START] token
+            target = torch.LongTensor(src.size(0)).fill_(self.st_id).to(device) # [START] token
             features = [None] * self.layer_num
 
             for t in range(num_steps):
@@ -572,8 +571,7 @@ class TransformerDecoder(nn.Module):
                 for l, layer in enumerate(self.attention_layers):
                     tgt = layer(tgt, features[l], src, tgt_mask)
                     features[l] = (
-                        tgt if features[l] == None else torch.cat(
-                            [features[l], tgt], 1)
+                        tgt if features[l] == None else torch.cat([features[l], tgt], 1)
                     )
 
                 _out = self.generator(tgt)  # [b, 1, c]
@@ -582,6 +580,103 @@ class TransformerDecoder(nn.Module):
                 target = target.squeeze()   # [b]
                 out.append(_out)
 
+            out = torch.stack(out, dim=1).to(device)    # [b, max length, 1, class length]
+            out = out.squeeze(2)    # [b, max length, class length]
+
+        return out
+        """
+
+            num_steps = batch_max_length - 1
+            target = [torch.LongTensor(src.size(0)).fill_(
+                self.st_id).to(device)]  # [START] token
+            features = [[None] * self.layer_num for k in range(beam_k)]
+            out = [[None] * num_steps for _ in range(beam_k)]
+            score = []
+
+            batch_size, _, __ = src.shape
+
+            for t in range(num_steps):
+                _k = len(target)
+                for k in range(len(target)):
+                    target[k] = target[k].unsqueeze(1)
+                    tgt = self.text_embedding(target[k])
+                    tgt = self.pos_encoder(tgt, point=t)
+                    tgt_mask = self.order_mask(t + 1)
+                    tgt_mask = tgt_mask[:, -1].unsqueeze(1)  # [1, (l+1)]
+                    for l, layer in enumerate(self.attention_layers):
+                        tgt = layer(tgt, features[k][l], src, tgt_mask)
+                        features[k][l] = (
+                            tgt if features[k][l] == None else torch.cat(
+                                [features[k][l], tgt], 1)
+                        )
+
+                    _out = self.generator(tgt)  # [b, 1, c]
+                    out[k][t] = _out
+                    target[k] = torch.topk(
+                        F.softmax(_out[:, -1, :], dim=1), k=beam_k, dim=-1)  # [b, k]
+
+                # k * [b, k]
+                target_val = [_target.values for _target in target]
+                # k * [b, k]
+                target_idx = [_target.indices for _target in target]
+                target_val = torch.cat(target_val, dim=-1)  # [b, k*K]
+                target_idx = torch.cat(target_idx, dim=-1)  # [b, k*K]
+
+                if score == []:
+                    score = torch.log(target_val)
+                else:
+                    score = torch.cat([score for _ in range(beam_k)], dim=-1)
+                    score += torch.log(target_val)
+
+                val, idx = torch.topk(score, k=beam_k, dim=-1)  # [b, k]
+                for i in range(len(idx)):
+                    idx[i] += i * _k * beam_k
+                idx = idx.flatten()
+
+                # score, target, features, out
+
+                # val, idx : [b, k]
+                # target   : [b, k*k]
+                # features : k * layers * [b, t, hidden]
+                # out      : k * t * [b, 1, hidden]
+
+                target = torch.index_select(
+                    target_idx.flatten(), 0, idx).view(batch_size, -1)
+                target = [target[:, k] for k in range(beam_k)]
+
+                #score = torch.index_select(score.flatten(), 0, idx).view(batch_size, -1)
+                score = val
+
+                for l in range(len(self.attention_layers)):
+                    _features = [features[k][l].view(
+                        batch_size, 1, t+1, -1) for k in range(_k)]
+                    _features = torch.cat(_features, dim=1).view(
+                        batch_size*_k, t+1, -1)
+                    _features = torch.index_select(
+                        _features, 0, idx//beam_k).view(batch_size, beam_k, t+1, -1)
+                    for k in range(beam_k):
+                        features[k][l] = _features[:, k, :, :]
+
+                for _t in range(t+1):
+                    _out = [out[k][_t] for k in range(_k)]
+                    _out = torch.cat(_out, dim=1).view(batch_size*_k, 1, -1)
+                    _out = torch.index_select(
+                        _out, 0, idx//beam_k).view(batch_size, beam_k, 1, -1)
+                    for k in range(beam_k):
+                        out[k][_t] = _out[:, k, :, :]
+
+            argmax = torch.argmax(score, dim=1)
+            for i in range(len(argmax)):
+                argmax[i] += i * beam_k
+
+            for t in range(num_steps):
+                _out = [out[k][t] for k in range(beam_k)]
+                _out = torch.cat(_out, dim=1).view(batch_size*beam_k, 1, -1)
+                _out = torch.index_select(
+                    _out, 0, argmax).view(batch_size, 1, -1)
+                out[0][t] = _out
+
+            out = out[0]
             # [b, max length, 1, class length]
             out = torch.stack(out, dim=1).to(device)
             out = out.squeeze(2)    # [b, max length, class length]
